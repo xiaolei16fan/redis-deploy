@@ -28,7 +28,9 @@ if [ -f $INSTALL_PATH/$REDIS_ARCHIVE ]; then
     
     echo "switch to $REDIS_SOURCE path..."
     cd $REDIS_SOURCE
-    
+    sed -i "s/after 1000/after 10000/g" ./tests/integration/replication-2.tcl
+    sed -i "s/after 100/after 300/g" ./tests/integration/replication-psync.tcl
+
     echo "set PREFIX=/usr/local/redis and make..."
     make PREFIX=/usr/local/redis install
     
