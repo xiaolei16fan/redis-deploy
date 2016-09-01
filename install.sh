@@ -53,7 +53,7 @@ read -p "Is this ok? Then press ENTER to go on or Ctrl-C to abort." _UNUSED_
 echo "STARTING to TEST redis status..."
 echo "[1] checking redis path installed on /usr/local/redis..."
 REDIS_PATH=/usr/local/redis
-TEST_DIR=conf log script data
+TEST_DIR="conf log script data"
 for dir in $TEST_DIR; do
     if [ -d $REDIS_PATH/$dir ]; then
         echo "[1] $REDIS_PATH/$dir passed!"
@@ -63,7 +63,7 @@ for dir in $TEST_DIR; do
 done
 
 echo "[2] checking files in redis bin path..."
-BIN_FILE=redis-benchmark redis-check-aof redis-check-rdb redis-cli redis-sentinel redis-server
+BIN_FILE="redis-benchmark redis-check-aof redis-check-rdb redis-cli redis-sentinel redis-server"
 for file in $BIN_FILE; do
     if [ -f $REDIS_PATH/bin/$file ]; then
         echo "[2] $REDIS_PATH/bin/$file passed!"
@@ -73,7 +73,7 @@ for file in $BIN_FILE; do
 done
 
 echo "[3] checking configuration files wethere exists..."
-CONF_FILE=redis.conf sentinel.conf
+CONF_FILE="redis.conf sentinel.conf"
 for conf in $CONF_FILE; do
     if [ -f $REDIS_PATH/conf/$conf ]; then
         echo "[3] $REDIS_PATH/conf/$conf passed!"
