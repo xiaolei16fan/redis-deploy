@@ -36,7 +36,7 @@ if [ -f $INSTALL_PATH/$REDIS_ARCHIVE ]; then
     # 修改内存相关参数
     echo never > /sys/kernel/mm/transparent_hugepage/enabled
     echo 'echo never > /sys/kernel/mm/transparent_hugepage/enabled' >> /etc/rc.local
-    $SYSCTL=/etc/sysctl.conf
+    SYSCTL=/etc/sysctl.conf
     grep '^vm\.overcommit_memory\s*=\s*1$' $SYSCTL || echo 'vm.overcommit_memory = 1' >> $SYSCTL
     grep '^net\.core\.somaxconn\s*=\s*65535$' $SYSCTL || echo 'net.core.somaxconn = 65535' >> $SYSCTL
     grep '^net\.ipv4\.tcp_max_syn_backlog\s*=\s*20480$' $SYSCTL || echo 'net.ipv4.tcp_max_syn_backlog = 20480' >> $SYSCTL
