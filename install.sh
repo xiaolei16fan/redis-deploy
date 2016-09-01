@@ -20,58 +20,54 @@ fi
 REDIS_URL=http://download.redis.io/releases/redis-3.2.3.tar.gz
 REDIS_ARCHIVE="redis-3.2.3.tar.gz"
 REDIS_SOURCE="redis-3.2.3"
-wget $REDIS_URL
-if [ -f $INSTALL_PATH/$REDIS_ARCHIVE ]; then
-    
-    echo "Discovered $REDIS_ARCHIVE file, starting to install..."
-    tar -vxzf $REDIS_ARCHIVE
-    
-    echo "switch to $REDIS_SOURCE path..."
-    cd $REDIS_SOURCE
+test -f $INSTALL_PATH/$REDIS_ARCHIVE || wget $REDIS_URL
 
-    # 修改测试代码，防止某些连接测试超时
-    sed -i "s/after 1000/after 10000/g" ./tests/integration/replication-2.tcl
-    sed -i "s/after 100/after 300/g" ./tests/integration/replication-psync.tcl
+echo "Discovered $REDIS_ARCHIVE file, starting to install..."
+tar -vxzf $REDIS_ARCHIVE
 
-    # 修改内存相关参数
-    echo never > /sys/kernel/mm/transparent_hugepage/enabled
-    echo 'echo never > /sys/kernel/mm/transparent_hugepage/enabled' >> /etc/rc.local
-    SYSCTL=/etc/sysctl.conf
-    grep '^vm\.overcommit_memory\s*=\s*1$' $SYSCTL || echo 'vm.overcommit_memory = 1' >> $SYSCTL
-    grep '^net\.core\.somaxconn\s*=\s*65535$' $SYSCTL || echo 'net.core.somaxconn = 65535' >> $SYSCTL
-    grep '^net\.ipv4\.tcp_max_syn_backlog\s*=\s*20480$' $SYSCTL || echo 'net.ipv4.tcp_max_syn_backlog = 20480' >> $SYSCTL
-    sysctl -p
+echo "switch to $REDIS_SOURCE path..."
+cd $REDIS_SOURCE
 
-    # 修改redis可打开的最大文件数
-    SEC_LIMITS=/etc/security/limits.conf
-    grep '^\*\s*soft\s*nofile\s*65535$' $SEC_LIMITS || echo '*  soft nofile 65535' >> /etc/security/limits.conf
-    grep '^\*\s*soft\s*nofile\s*65535$' $SEC_LIMITS || echo '*  hard nofile 65535' >> /etc/security/limits.conf
-    PAM_FILE="/etc/pam.d/sudo /etc/pam.d/common-session-noninteractive"
-    for pam in $PAM_FILE; do
-        if [ -f $pam ] && grep 'pam_limits.so' $pam; then
-            echo "maximum open files already set to 65535."
-        else
-            echo "$pam file does not exists or it does not include pam_limits.so record."
-        fi
-    done
+# 修改测试代码，防止某些连接测试超时
+sed -i "s/after 1000/after 10000/g" ./tests/integration/replication-2.tcl
+sed -i "s/after 100/after 300/g" ./tests/integration/replication-psync.tcl
 
-    echo "set PREFIX=/usr/local/redis and make..."
-    make PREFIX=/usr/local/redis install
-    
-    echo "make test && make install..."
-    make test && make install
+# 修改内存相关参数
+echo never > /sys/kernel/mm/transparent_hugepage/enabled
+echo 'echo never > /sys/kernel/mm/transparent_hugepage/enabled' >> /etc/rc.local
+SYSCTL=/etc/sysctl.conf
+grep '^vm\.overcommit_memory\s*=\s*1$' $SYSCTL || echo 'vm.overcommit_memory = 1' >> $SYSCTL
+grep '^net\.core\.somaxconn\s*=\s*65535$' $SYSCTL || echo 'net.core.somaxconn = 65535' >> $SYSCTL
+grep '^net\.ipv4\.tcp_max_syn_backlog\s*=\s*20480$' $SYSCTL || echo 'net.ipv4.tcp_max_syn_backlog = 20480' >> $SYSCTL
+sysctl -p
 
-    echo "make some path in /usr/local/redis..."
-    mkdir /usr/local/redis/{conf,log,script,data}
+# 修改redis可打开的最大文件数
+SEC_LIMITS=/etc/security/limits.conf
+grep '^\*\s*soft\s*nofile\s*65535$' $SEC_LIMITS || echo '*  soft nofile 65535' >> /etc/security/limits.conf
+grep '^\*\s*soft\s*nofile\s*65535$' $SEC_LIMITS || echo '*  hard nofile 65535' >> /etc/security/limits.conf
+PAM_FILE="/etc/pam.d/sudo /etc/pam.d/common-session-noninteractive"
+for pam in $PAM_FILE; do
+    if [ -f $pam ] && grep 'pam_limits.so' $pam; then
+        echo "maximum open files already set to 65535."
+    else
+        echo "$pam file does not exists or it does not include pam_limits.so record."
+    fi
+done
 
-    echo "copy some configuration file to /usr/local/redis/conf..."
-    cp redis.conf sentinel.conf /usr/local/redis/conf
+echo "set PREFIX=/usr/local/redis and make..."
+make PREFIX=/usr/local/redis install
 
-    echo "installing redis successed!"
-else
-    echo "[ERROR]: $REDIS_ARCHIVE file did not found."
-    exit
-fi
+echo "make test && make install..."
+make test && make install
+
+echo "make some path in /usr/local/redis..."
+mkdir /usr/local/redis/{conf,log,script,data}
+
+echo "copy some configuration file to /usr/local/redis/conf..."
+cp redis.conf sentinel.conf /usr/local/redis/conf
+
+echo "installing redis successed!"
+
 
 read -p "Is this ok? Then press ENTER to go on or Ctrl-C to abort." _UNUSED_
 
