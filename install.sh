@@ -68,7 +68,6 @@ cp redis.conf sentinel.conf /usr/local/redis/conf
 
 echo "installing redis successed!"
 
-
 read -p "Is this ok? Then press ENTER to go on or Ctrl-C to abort." _UNUSED_
 
 # 测试安装情况
