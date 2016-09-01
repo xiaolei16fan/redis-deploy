@@ -3,7 +3,7 @@
 #date: 2016.09.01
 
 # 安装基本环境
-yum -y install tcl
+yum -y install tcl gcc cc
 
 # 检查安装目录
 INSTALL_PATH="/root/redis-deploy"
