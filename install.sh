@@ -28,14 +28,32 @@ if [ -f $INSTALL_PATH/$REDIS_ARCHIVE ]; then
     
     echo "switch to $REDIS_SOURCE path..."
     cd $REDIS_SOURCE
+
+    # 修改测试代码，防止某些连接测试超时
     sed -i "s/after 1000/after 10000/g" ./tests/integration/replication-2.tcl
     sed -i "s/after 100/after 300/g" ./tests/integration/replication-psync.tcl
+
+    # 修改内存相关参数
     echo never > /sys/kernel/mm/transparent_hugepage/enabled
     echo 'echo never > /sys/kernel/mm/transparent_hugepage/enabled' >> /etc/rc.local
-    echo 'vm.overcommit_memory = 1' >> /etc/sysctl.conf
-    echo 'net.core.somaxconn = 65535' >> /etc/sysctl.conf
-    echo 'net.ipv4.tcp_max_syn_backlog = 20480' >> /etc/sysctl.conf
+    $SYSCTL=/etc/sysctl.conf
+    grep '^vm\.overcommit_memory\s*=\s*1$' $SYSCTL || echo 'vm.overcommit_memory = 1' >> $SYSCTL
+    grep '^net\.core\.somaxconn\s*=\s*65535$' $SYSCTL || echo 'net.core.somaxconn = 65535' >> $SYSCTL
+    grep '^net\.ipv4\.tcp_max_syn_backlog\s*=\s*20480$' $SYSCTL || echo 'net.ipv4.tcp_max_syn_backlog = 20480' >> $SYSCTL
     sysctl -p
+
+    # 修改redis可打开的最大文件数
+    SEC_LIMITS=/etc/security/limits.conf
+    grep '^\*\s*soft\s*nofile\s*65535$' $SEC_LIMITS || echo '*  soft nofile 65535' >> /etc/security/limits.conf
+    grep '^\*\s*soft\s*nofile\s*65535$' $SEC_LIMITS || echo '*  hard nofile 65535' >> /etc/security/limits.conf
+    PAM_FILE="/etc/pam.d/sudo /etc/pam.d/common-session-noninteractive"
+    for pam in $PAM_FILE; do
+        if [ -f $pam ] && [ grep 'pam_limits.so' $pam ]; then
+            echo "maximum open files already set to 65535."
+        else
+            echo "$pam file does not exists or it does not include pam_limits.so record."
+        fi
+    done
 
     echo "set PREFIX=/usr/local/redis and make..."
     make PREFIX=/usr/local/redis install
