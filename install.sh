@@ -68,8 +68,6 @@ cp redis.conf sentinel.conf /usr/local/redis/conf
 
 echo "installing redis successed!"
 
-read -p "Is this ok? Then press ENTER to go on or Ctrl-C to abort." _UNUSED_
-
 # 测试安装情况
 echo "STARTING to TEST redis status..."
 echo "[1] checking redis path installed on /usr/local/redis..."
@@ -106,3 +104,7 @@ done
 read -p "Is this ok? Then press ENTER to go on or Ctrl-C to abort." _UNUSED_
 
 # 修改配置文件
+REDIS_CONF=/usr/local/redis/conf
+BIND_IP=192.168.33.14
+sed -i "s/^bind\s*127\.0\.0\.1$/bind 127.0.0.1 $BIND_IP/g" $REDIS_CONF/redis.conf
+sed -i "s/^daemonize\s*no$/daemonize yes/g" $REDIS_CONF/redis.conf
