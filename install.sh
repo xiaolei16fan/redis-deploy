@@ -48,7 +48,7 @@ if [ -f $INSTALL_PATH/$REDIS_ARCHIVE ]; then
     grep '^\*\s*soft\s*nofile\s*65535$' $SEC_LIMITS || echo '*  hard nofile 65535' >> /etc/security/limits.conf
     PAM_FILE="/etc/pam.d/sudo /etc/pam.d/common-session-noninteractive"
     for pam in $PAM_FILE; do
-        if [ -f $pam ] && [ grep 'pam_limits.so' $pam ]; then
+        if [ -f $pam ] && grep 'pam_limits.so' $pam; then
             echo "maximum open files already set to 65535."
         else
             echo "$pam file does not exists or it does not include pam_limits.so record."
