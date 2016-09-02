@@ -134,6 +134,7 @@ sed -i "s/^sentinel\smonitor.*/sentinel monitor mymaster 192.168.33.11 6379 2/g"
 sed -i "s/^sentinel\sdown-after-milliseconds.*/sentinel down-after-milliseconds mymaster 5000/g" $REDIS_CONF/sentinel.conf
 sed -i "s/^sentinel\sfailover-timeout.*/sentinel failover-timeout mymaster 60000/g" $REDIS_CONF/sentinel.conf
 
+
 # 测试配置
 echo "======================sentinel.conf==========================="
 grep -v '^#' $REDIS_CONF/sentinel.conf | grep -v '^$'
@@ -158,19 +159,33 @@ sed -i "s/^EXEC.*/EXEC=\/usr\/local\/redis\/bin\/redis-sentinel/g" $SENTINEL_INI
 sed -i "s/^CLIEXEC.*/CLIEXEC=\/usr\/local\/redis\/bin\/redis-cli/g" $SENTINEL_INIT_PATH
 sed -i "s/^PIDFILE.*/PIDFILE=\/usr\/local\/redis\/run\/sentinel.pid/g" $SENTINEL_INIT_PATH
 sed -i "s/^CONF.*/CONF=\/usr\/local\/redis\/conf\/sentinel.conf/g" $SENTINEL_INIT_PATH
+sed -i "s/Redis/Sentinel/g" $SENTINEL_INIT_PATH
 
 # 加入开机启动
 chkconfig redis on
 chkconfig sentinel on
-echo 'export PATH="$PATH:/usr/local/redis/bin"' >> /etc/profile
+grep '/usr/loal/redis/bin' /etc/profile || echo 'export PATH="$PATH:/usr/local/redis/bin"' >> /etc/profile
 source /etc/profile
 
 # 测试开机启动
 service redis start
-TEST_PID=`cat /usr/local/redis/run/redis.pid`
-echo "The redis PID: $TEST_PID"
 service sentinel start
-TEST_PID=`cat /usr/local/redis/run/sentinel.pid`
-echo "The sentinel PID: $TEST_DIR"
-redis-cli -p 6379 shutdown
-redis-cli -p 26379 -h $BIND_IP shutdown
+sleep 2
+REDIS_PID_PATH=/usr/local/redis/run
+if [ -f $REDIS_PID_PATH/redis.pid ]; then
+    echo "OK! REDIS IS RUNNING..."
+    cat $REDIS_PID_PATH/redis.pid
+else
+    echo "$REDIS_PID_PATH/redis.pid does not exists."
+fi
+if [ -f $REDIS_PID_PATH/sentinel.pid ]; then
+    echo "OK! SENTINEL IS RUNNING..."
+    cat $REDIS_PID_PATH/sentinel.pid
+else
+    echo "$REDIS_PID_PATH/sentinel.pid does not exists."
+fi
+redis-cli -p 6379 shutdown && echo "shut down redis server..."
+redis-cli -p 26379 -h $BIND_IP shutdown && echo "shut down sentinel server..."
+if [ `echo $?` = 0 ]; then
+    echo "OK! REDIS AND SENTINEL CAN WORK ON THIS SERVER."
+fi
