@@ -139,3 +139,7 @@ echo "======================sentinel.conf==========================="
 grep -v '^#' $REDIS_CONF/sentinel.conf | grep -v '^$'
 echo
 read -p "Is this ok? Then press ENTER to go on or Ctrl-C to abort." _UNUSED_
+
+# 配置开机启动
+cp ./utils/redis_init_script /etc/init.d/redis
+cp ./utils/redis_init_script /etc/init.d/sentinel
