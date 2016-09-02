@@ -164,3 +164,13 @@ chkconfig redis on
 chkconfig sentinel on
 echo 'export PATH="$PATH:/usr/local/redis/bin"' >> /etc/profile
 source /etc/profile
+
+# 测试开机启动
+service redis start
+TEST_PID=`cat /usr/local/redis/run/redis.pid`
+echo "The redis PID: $TEST_PID"
+service sentinel start
+TEST_PID=`cat /usr/local/redis/run/sentinel.pid`
+echo "The sentinel PID: $TEST_DIR"
+redis-cli -p 6379 shutdown
+redis-cli -p 26379 -h $BIND_IP shutdown
