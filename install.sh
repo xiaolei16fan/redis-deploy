@@ -69,8 +69,6 @@ mkdir /usr/local/redis/{conf,log,script,data}
 echo "copy some configuration file to /usr/local/redis/conf..."
 cp redis.conf sentinel.conf /usr/local/redis/conf
 
-echo "installing redis successed!"
-
 # 测试安装情况
 echo "STARTING to TEST redis status..."
 echo "[1] checking redis path installed on /usr/local/redis..."
@@ -103,6 +101,7 @@ for conf in $CONF_FILE; do
         echo "[3] $REDIS_PATH/conf/$conf failed!"
     fi
 done
+echo "INSTALLING REDIS SUCCESSED!"
 
 read -p "Is this ok? Then press ENTER to go on or Ctrl-C to abort." _UNUSED_
 
@@ -138,5 +137,5 @@ sed -i "s/^sentinel\sfailover-timeout.*/sentinel failover-timeout mymaster 60000
 # 测试配置
 echo "======================sentinel.conf==========================="
 grep -v '^#' $REDIS_CONF/sentinel.conf | grep -v '^$'
-echo "\n"
+echo
 read -p "Is this ok? Then press ENTER to go on or Ctrl-C to abort." _UNUSED_
