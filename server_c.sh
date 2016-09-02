@@ -64,7 +64,7 @@ echo "make test && make install..."
 make test && make install
 
 echo "make some path in /usr/local/redis..."
-mkdir /usr/local/redis/{conf, log, script, data, run}
+mkdir /usr/local/redis/{conf,log,script,data,run}
 
 echo "copy some configuration file to /usr/local/redis/conf..."
 cp redis.conf sentinel.conf /usr/local/redis/conf
