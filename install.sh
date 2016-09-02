@@ -2,6 +2,9 @@
 #author: xiaolei <xiaolei@16fan.com>
 #date: 2016.09.01
 
+# 配置参数
+BIND_IP=192.168.33.11
+
 # 安装基本环境
 yum -y install tcl gcc cc wget
 
@@ -103,8 +106,37 @@ done
 
 read -p "Is this ok? Then press ENTER to go on or Ctrl-C to abort." _UNUSED_
 
-# 修改配置文件
+# 修改配置文件redis.conf
 REDIS_CONF=/usr/local/redis/conf
-BIND_IP=192.168.33.14
 sed -i "s/^bind\s*127\.0\.0\.1$/bind 127.0.0.1 $BIND_IP/g" $REDIS_CONF/redis.conf
 sed -i "s/^daemonize\s*no$/daemonize yes/g" $REDIS_CONF/redis.conf
+sed -i "s/^slave-priority\s*[0-9]*$/slave-priority 100/g" $REDIS_CONF/redis.conf
+grep '^maxmemory\s*[0-9A-Za-z]*$' $REDIS_CONF/redis.conf || echo "maxmemory 10gb" >> $REDIS_CONF/redis.conf
+sed -i "s/^dir\s*\.\/$/dir \/usr\/local\/redis\/data/g" $REDIS_CONF/redis.conf
+sed -i "s/^logfile\s*\"*$/logfile \/usr\/local\/redis\/log\/redis.log/g" $REDIS_CONF/redis.conf
+sed -i "s/^pidfile\s*\/var\/run\/redis_6379\.pid/pidfile \/usr\/local\/redis\/run\/redis.pid/g" $REDIS_CONF/redis.conf
+sed -i "s/^save\s/# save/g" $REDIS_CONF/redis.conf
+
+# 测试配置
+echo "======================redis.conf==========================="
+grep -v '^#' $REDIS_CONF/redis.conf | grep -v '^$'
+
+
+# 修改配置文件sentinel.conf
+sed -i "s/^bind\s*127\.0\.0\.1$/bind 127.0.0.1 $BIND_IP/g" $REDIS_CONF/sentinel.conf
+grep '^bind.*' $REDIS_CONF/sentinel.conf || echo "bind $BIND_IP" >> $REDIS_CONF/sentinel.conf
+sed -i "s/^daemonize\s*no$/daemonize yes/g" $REDIS_CONF/sentinel.conf
+grep '^daemonize.*' $REDIS_CONF/sentinel.conf || echo "daemonize yes" >> $REDIS_CONF/sentinel.conf
+sed -i "s/^logfile\s*\"*$/logfile \/usr\/local\/redis\/log\/sentinel.log/g" $REDIS_CONF/sentinel.conf
+grep '^logfile.*' $REDIS_CONF/sentinel.conf || echo "logfile /usr/local/redis/log/sentinel.log" >> $REDIS_CONF/sentinel.conf
+sed -i "s/^pidfile\s*\/var\/run\/redis_6379\.pid/pidfile \/usr\/local\/redis\/run\/sentinel.pid/g" $REDIS_CONF/sentinel.conf
+grep '^pidfile.*' $REDIS_CONF/sentinel.conf || echo "pidfile /usr/local/redis/run/sentinel.pid" >> $REDIS_CONF/sentinel.conf
+sed -i "s/^sentinel\smonitor.*/sentinel monitor mymaster 192.168.33.11 6379 2/g" $REDIS_CONF/sentinel.conf
+sed -i "s/^sentinel\sdown-after-milliseconds.*/sentinel down-after-milliseconds mymaster 5000/g" $REDIS_CONF/sentinel.conf
+sed -i "s/^sentinel\sfailover-timeout.*/sentinel failover-timeout mymaster 60000/g" $REDIS_CONF/sentinel.conf
+
+# 测试配置
+echo "======================sentinel.conf==========================="
+grep -v '^#' $REDIS_CONF/sentinel.conf | grep -v '^$'
+echo "\n"
+read -p "Is this ok? Then press ENTER to go on or Ctrl-C to abort." _UNUSED_
