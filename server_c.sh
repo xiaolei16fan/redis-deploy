@@ -171,6 +171,7 @@ source /etc/profile
 
 # 测试开机启动
 service redis start
+sleep 2
 service sentinel start
 sleep 2
 REDIS_PID_PATH=/usr/local/redis/run
@@ -180,6 +181,7 @@ if [ -f $REDIS_PID_PATH/redis.pid ]; then
 else
     echo "$REDIS_PID_PATH/redis.pid does not exists."
 fi
+sleep 2
 if [ -f $REDIS_PID_PATH/sentinel.pid ]; then
     echo "OK! SENTINEL IS RUNNING..."
     cat $REDIS_PID_PATH/sentinel.pid
