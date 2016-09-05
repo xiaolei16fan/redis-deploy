@@ -166,7 +166,7 @@ source /etc/profile
 
 # 测试开机启动
 service sentinel start
-sleep 2
+sleep 4
 REDIS_PID_PATH=/usr/local/redis/run
 
 if [ -f $REDIS_PID_PATH/sentinel.pid ]; then
