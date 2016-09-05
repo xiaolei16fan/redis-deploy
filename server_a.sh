@@ -111,13 +111,14 @@ echo "INSTALLING REDIS SUCCESSED!"
 read -p "Is this ok? Then press ENTER to go on or Ctrl-C to abort." _UNUSED_
 
 # 修改配置文件sentinel.conf
-sed -i "s/^bind\s*127\.0\.0\.1$/bind 127.0.0.1 $BIND_IP/g" $REDIS_CONF/sentinel.conf
+REDIS_CONF=/usr/local/redis/conf
+# sed -i "s/^bind\s*127\.0\.0\.1$/bind 127.0.0.1 $BIND_IP/g" $REDIS_CONF/sentinel.conf
 grep '^bind.*' $REDIS_CONF/sentinel.conf || echo "bind $BIND_IP" >> $REDIS_CONF/sentinel.conf
-sed -i "s/^daemonize\s*no$/daemonize yes/g" $REDIS_CONF/sentinel.conf
+# sed -i "s/^daemonize\s*no$/daemonize yes/g" $REDIS_CONF/sentinel.conf
 grep '^daemonize.*' $REDIS_CONF/sentinel.conf || echo "daemonize yes" >> $REDIS_CONF/sentinel.conf
-sed -i "s/^logfile\s*\"*$/logfile \/usr\/local\/redis\/log\/sentinel.log/g" $REDIS_CONF/sentinel.conf
+# sed -i "s/^logfile\s*\"*$/logfile \/usr\/local\/redis\/log\/sentinel.log/g" $REDIS_CONF/sentinel.conf
 grep '^logfile.*' $REDIS_CONF/sentinel.conf || echo "logfile /usr/local/redis/log/sentinel.log" >> $REDIS_CONF/sentinel.conf
-sed -i "s/^pidfile\s*\/var\/run\/redis_6379\.pid/pidfile \/usr\/local\/redis\/run\/sentinel.pid/g" $REDIS_CONF/sentinel.conf
+# sed -i "s/^pidfile\s*\/var\/run\/redis_6379\.pid/pidfile \/usr\/local\/redis\/run\/sentinel.pid/g" $REDIS_CONF/sentinel.conf
 grep '^pidfile.*' $REDIS_CONF/sentinel.conf || echo "pidfile /usr/local/redis/run/sentinel.pid" >> $REDIS_CONF/sentinel.conf
 sed -i "s/^sentinel\smonitor.*/sentinel monitor mymaster $MASTER_IP 6379 2/g" $REDIS_CONF/sentinel.conf
 sed -i "s/^sentinel\sdown-after-milliseconds.*/sentinel down-after-milliseconds mymaster 5000/g" $REDIS_CONF/sentinel.conf
