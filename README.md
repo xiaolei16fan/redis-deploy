@@ -1,5 +1,5 @@
 #redis-deploy
-这是一个生产环境的Redis部署脚本。
+这是一套生产环境的Redis部署脚本。
 
 #安装
 ```shell
