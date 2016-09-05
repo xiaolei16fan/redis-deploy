@@ -18,7 +18,11 @@ echo "STATUS:"
 ps -ef | grep redis
 
 # 测试主从切换
+redis-cli -p 26379 -h localhost sentinel failover mymaster
+redis-cli -p 26379 -h localhost info | tail -1
 
 # 压力测试
 
 # 主从同步测试
+redis-cli -p 6379 -h redisserver16fan set test test
+redis-cli -p 6379 -h 192.168.33.16 get test
