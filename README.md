@@ -2,7 +2,7 @@
 这是一个生产环境的Redis部署脚本。
 
 #安装
-```
+```shell
 git clone https://github.com/xiaolei16fan/redis-deploy.git
 cd redis-deploy
 chmod +x ./*
