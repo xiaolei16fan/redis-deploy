@@ -166,7 +166,7 @@ sed -i "s/Redis/Sentinel/g" $SENTINEL_INIT_PATH
 # 加入开机启动
 chkconfig redis on
 chkconfig sentinel on
-grep '/usr/loal/redis/bin' /etc/profile || echo 'export PATH="$PATH:/usr/local/redis/bin"' >> /etc/profile
+grep '/usr/local/redis/bin' /etc/profile || echo 'export PATH="$PATH:/usr/local/redis/bin"' >> /etc/profile
 source /etc/profile
 
 # 测试开机启动
