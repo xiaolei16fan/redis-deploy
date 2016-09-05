@@ -123,7 +123,8 @@ grep '^pidfile.*' $REDIS_CONF/sentinel.conf || echo "pidfile /usr/local/redis/ru
 sed -i "s/^sentinel\smonitor.*/sentinel monitor mymaster $MASTER_IP 6379 2/g" $REDIS_CONF/sentinel.conf
 sed -i "s/^sentinel\sdown-after-milliseconds.*/sentinel down-after-milliseconds mymaster 5000/g" $REDIS_CONF/sentinel.conf
 sed -i "s/^sentinel\sfailover-timeout.*/sentinel failover-timeout mymaster 60000/g" $REDIS_CONF/sentinel.conf
-cp bind_hosts.sh failover_notice.sh /usr/local/redis/script
+cp bind_hosts.sh  /usr/local/redis/script
+cp failover_notice.sh /usr/local/redis/script
 grep '^sentinel\s*client-reconfig-script.*' || echo "sentinel client-reconfig-script mymaster /usr/local/redis/script/bind_hosts.sh" >> $REDIS_CONF/sentinel.conf
 grep '^sentinel\s*notification-script.*' || echo "sentinel notification-script mymaster /usr/local/redis/script/failover_notice.sh" >> $REDIS_CONF/sentinel.conf
 
