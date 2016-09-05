@@ -125,8 +125,8 @@ sed -i "s/^sentinel\sdown-after-milliseconds.*/sentinel down-after-milliseconds 
 sed -i "s/^sentinel\sfailover-timeout.*/sentinel failover-timeout mymaster 60000/g" $REDIS_CONF/sentinel.conf
 cp $INSTALL_PATH/bind_hosts.sh  /usr/local/redis/script
 cp $INSTALL_PATH/failover_notice.sh /usr/local/redis/script
-grep '^sentinel\s*client-reconfig-script.*' || echo "sentinel client-reconfig-script mymaster /usr/local/redis/script/bind_hosts.sh" >> $REDIS_CONF/sentinel.conf
-grep '^sentinel\s*notification-script.*' || echo "sentinel notification-script mymaster /usr/local/redis/script/failover_notice.sh" >> $REDIS_CONF/sentinel.conf
+grep '^sentinel\s*client-reconfig-script.*' $REDIS_CONF/sentinel.conf || echo "sentinel client-reconfig-script mymaster /usr/local/redis/script/bind_hosts.sh" >> $REDIS_CONF/sentinel.conf
+grep '^sentinel\s*notification-script.*' $REDIS_CONF/sentinel.conf || echo "sentinel notification-script mymaster /usr/local/redis/script/failover_notice.sh" >> $REDIS_CONF/sentinel.conf
 
 
 # 测试配置
