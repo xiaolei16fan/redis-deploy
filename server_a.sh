@@ -179,3 +179,7 @@ redis-cli -p 26379 -h $BIND_IP shutdown && echo "shut down sentinel server..."
 if [ `echo $?` = 0 ]; then
     echo "OK! REDIS AND SENTINEL CAN WORK ON THIS SERVER."
 fi
+
+# 安装redis-stat
+
+# 安装phpredis
