@@ -168,10 +168,11 @@ REDIS_PID_PATH=/usr/local/redis/run
 if [ -f $REDIS_PID_PATH/sentinel.pid ]; then
     echo "OK! SENTINEL IS RUNNING..."
     cat $REDIS_PID_PATH/sentinel.pid
+    ps -ef | grep 'sentinel'
 else
     echo "$REDIS_PID_PATH/sentinel.pid does not exists."
 fi
-redis-cli -p 26379 -h $BIND_IP shutdown && echo "shut down sentinel server..."
+# redis-cli -p 26379 -h $BIND_IP shutdown && echo "shut down sentinel server..."
 if [ `echo $?` = 0 ]; then
     echo "OK! REDIS AND SENTINEL CAN WORK ON THIS SERVER."
 fi

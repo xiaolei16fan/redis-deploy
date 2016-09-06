@@ -188,8 +188,9 @@ if [ -f $REDIS_PID_PATH/sentinel.pid ]; then
 else
     echo "$REDIS_PID_PATH/sentinel.pid does not exists."
 fi
-redis-cli -p 6379 shutdown && echo "shut down redis server..."
-redis-cli -p 26379 -h $BIND_IP shutdown && echo "shut down sentinel server..."
+ps -ef | grep 'redis'
+# redis-cli -p 6379 shutdown && echo "shut down redis server..."
+# redis-cli -p 26379 -h $BIND_IP shutdown && echo "shut down sentinel server..."
 if [ `echo $?` = 0 ]; then
     echo "OK! REDIS AND SENTINEL CAN WORK ON THIS SERVER."
 fi
