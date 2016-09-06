@@ -14,3 +14,8 @@ chmod +x ./*
 1. 在每个服务器上都`clone`一下这个仓库
 2. 修改每个配置文件的IP和email
 2. 在每个服务器上执行对应脚本
+
+#redis开发环境安装
+```shell
+wget -qO- https://github.com/xiaolei16fan/redis-deploy/blob/master/redis-dev.sh | bash
+```
