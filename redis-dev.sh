@@ -158,6 +158,7 @@ fi
 echo "127.0.0.1 redisserver16fan" >> /etc/hosts
 
 # 安装phpredis
+echo "Starting to install phpredis..."
 git clone https://github.com/phpredis/phpredis.git
 cd phpredis
 phpize
