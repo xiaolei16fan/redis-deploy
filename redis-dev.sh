@@ -161,7 +161,9 @@ cd phpredis
 phpize
 ./configure --with-php-config=/usr/local/php/bin/php-config
 make && make install
-echo 'extension_dir = "/usr/local/php/lib/php/extensions/no-debug-non-zts-20090626/"' >> /usr/local/php/etc/php.ini
+no_debug_path=`ls /usr/local/php/lib/php/extensions`
+extension_dir="/usr/local/php/lib/php/extensions/"$no_debug_path
+echo "extension_dir = ${extension_dir}" >> /usr/local/php/etc/php.ini
 echo 'extension=redis.so' >> /usr/local/php/etc/php.ini
 service php-fpm restart
 php -i | grep Redis
