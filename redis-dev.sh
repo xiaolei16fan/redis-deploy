@@ -10,7 +10,7 @@
 yum -y install tcl gcc cc wget
 
 # 检查安装目录
-INSTALL_PATH="/root/redis-deploy"
+INSTALL_PATH="/root"
 CURRENT_PATH=`pwd .`
 if [ $INSTALL_PATH = $CURRENT_PATH ]; then
     echo "[ENV CHECK]: installing path check successed."
