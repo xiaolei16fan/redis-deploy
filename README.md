@@ -17,5 +17,5 @@ chmod +x ./*
 
 #redis开发环境安装
 ```shell
-wget -qO- https://github.com/xiaolei16fan/redis-deploy/blob/master/redis-dev.sh | bash
+wget -qO- https://raw.githubusercontent.com/xiaolei16fan/redis-deploy/master/redis-dev.sh | bash
 ```
