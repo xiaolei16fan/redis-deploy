@@ -133,14 +133,11 @@ sed -i "s/^CONF.*/CONF=\/usr\/local\/redis\/conf\/redis.conf/g" $REDIS_INIT_PATH
 
 # 加入开机启动
 chkconfig redis on
-chkconfig sentinel on
 grep '/usr/local/redis/bin' /etc/profile || echo 'export PATH="$PATH:/usr/local/redis/bin"' >> /etc/profile
 source /etc/profile
 
 # 测试开机启动
 service redis start
-sleep 2
-service sentinel start
 sleep 2
 REDIS_PID_PATH=/usr/local/redis/run
 if [ -f $REDIS_PID_PATH/redis.pid ]; then
