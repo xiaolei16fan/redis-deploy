@@ -17,5 +17,5 @@ fi
 EMAIL=xiaolei@16fan.com
 date=`date +%Y/%m/%d-%H:%M:%S`
 issues=/usr/local/redis/log/redis_issues.log
-echo -e "FAILOVER EVENT EXCEPTION at  ${date} \nSwitch HOST from: ${4} to: ${6}\nCURRENT MASTER: ${6}" > $issues
+echo -e "FAILOVER EVENT at  ${date} \nSwitch HOST from: ${4} to: ${6}\nCURRENT MASTER: ${6}" > $issues
 cat $issues | mail -s "Redis Failover Notice!" $EMAIL

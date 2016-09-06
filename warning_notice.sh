@@ -7,5 +7,5 @@
 EMAIL=xiaolei@16fan.com
 date=`date +%Y/%m/%d-%H:%M:%S`
 warning=/usr/local/redis/log/warning.log
-echo -e "WARNING EVENT EXCEPTION at ${date}.\nEVENT: ${1}\nDESC: ${2}" > $warning
+echo -e "WARNING EVENT at ${date}.\nEVENT: ${1}\nDESC: ${2}" > $warning
 cat $warning | mail -s "Redis Warning Notice!" $EMAIL
