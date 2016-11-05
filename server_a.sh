@@ -3,11 +3,11 @@
 #date: 2016.09.01
 #服务器A的redis配置脚本
 
-# 配置参数
-BIND_IP=192.168.33.11
-MASTER_IP=192.168.33.11
-EMAIL=xiaolei@16fan.com
-EMAIL_PASSWD=19927120
+# 配置参数（在运行脚本之前先修改以下参数）
+BIND_IP=192.168.33.11 # 主机的内网IP
+MASTER_IP=192.168.33.11 # 主机的内网IP
+EMAIL=xiaolei@16fan.com # 管理邮箱
+EMAIL_PASSWD=19927120 # 管理邮箱密码
 
 # 安装基本环境
 yum -y install tcl gcc cc wget
@@ -120,7 +120,7 @@ sed -i "s/^sentinel\smonitor.*/sentinel monitor mymaster $MASTER_IP 6379 2/g" $R
 sed -i "s/^sentinel\sdown-after-milliseconds.*/sentinel down-after-milliseconds mymaster 5000/g" $REDIS_CONF/sentinel.conf
 sed -i "s/^sentinel\sfailover-timeout.*/sentinel failover-timeout mymaster 60000/g" $REDIS_CONF/sentinel.conf
 cp $INSTALL_PATH/bind_hosts.sh  /usr/local/redis/script
-cp $INSTALL_PATH/failover_notice.sh /usr/local/redis/script
+cp $INSTALL_PATH/warning_notice.sh /usr/local/redis/script
 grep '^sentinel\s*client-reconfig-script.*' $REDIS_CONF/sentinel.conf || echo "sentinel client-reconfig-script mymaster /usr/local/redis/script/bind_hosts.sh" >> $REDIS_CONF/sentinel.conf
 grep '^sentinel\s*notification-script.*' $REDIS_CONF/sentinel.conf || echo "sentinel notification-script mymaster /usr/local/redis/script/warning_notice.sh" >> $REDIS_CONF/sentinel.conf
 

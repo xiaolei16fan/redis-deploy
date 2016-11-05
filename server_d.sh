@@ -1,11 +1,11 @@
 #!/bin/bash
 #author: xiaolei <xiaolei@16fan.com>
 #date: 2016.09.05
-#服务器D的redis配置脚本
+#服务器D的redis配置脚本（Slave）
 
-# 配置参数
-BIND_IP=192.168.33.11
-MASTER_IP=192.168.33.11
+# 配置参数（在运行脚本之前先修改以下参数）
+BIND_IP=192.168.33.11 # 主机的内网IP
+MASTER_IP=192.168.33.11 # 主机的内网IP
 
 # 安装基本环境
 yum -y install tcl gcc cc wget
