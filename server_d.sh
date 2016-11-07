@@ -173,8 +173,16 @@ source /etc/profile
 
 # 测试开机启动
 service redis start
+if [ `echo $?` != 0 ]; then
+    echo "Cannot lunch this redis server. Please manually execute [service redis start] commands to start."
+    exit 1
+fi
 sleep 2
 service sentinel start
+if [ `echo $?` != 0 ]; then
+    echo "Cannot lunch this sentinel server. Please manually execute [service sentinel start] commands to start."
+    exit 1
+fi
 sleep 2
 REDIS_PID_PATH=/usr/local/redis/run
 if [ -f $REDIS_PID_PATH/redis.pid ]; then
