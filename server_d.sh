@@ -113,7 +113,7 @@ REDIS_CONF=/usr/local/redis/conf
 sed -i "s/^bind\s*127\.0\.0\.1$/bind 127.0.0.1 $BIND_IP/g" $REDIS_CONF/redis.conf
 sed -i "s/^daemonize\s*no$/daemonize yes/g" $REDIS_CONF/redis.conf
 sed -i "s/^slave-priority\s*[0-9]*$/slave-priority 100/g" $REDIS_CONF/redis.conf
-grep '^maxmemory\s*[0-9A-Za-z]*$' $REDIS_CONF/redis.conf || echo "maxmemory 10gb" >> $REDIS_CONF/redis.conf
+grep '^maxmemory\s*[0-9A-Za-z]*$' $REDIS_CONF/redis.conf || echo "maxmemory 8gb" >> $REDIS_CONF/redis.conf
 sed -i "s/^dir\s*\.\/$/dir \/usr\/local\/redis\/data/g" $REDIS_CONF/redis.conf
 sed -i "s/^logfile\s*\"*$/logfile \/usr\/local\/redis\/log\/redis.log/g" $REDIS_CONF/redis.conf
 sed -i "s/^pidfile\s*\/var\/run\/redis_6379\.pid/pidfile \/usr\/local\/redis\/run\/redis.pid/g" $REDIS_CONF/redis.conf
