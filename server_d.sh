@@ -4,8 +4,8 @@
 #服务器D的redis配置脚本（Slave）
 
 # 配置参数（在运行脚本之前先修改以下参数）
-BIND_IP=192.168.33.11 # 主机的内网IP
-MASTER_IP=192.168.33.11 # 主机的内网IP
+BIND_IP=192.168.33.11 # 填写本机IP
+MASTER_IP=192.168.33.11 # 填写主Reis的IP
 
 # 安装基本环境
 yum -y install tcl gcc cc wget
