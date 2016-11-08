@@ -118,6 +118,7 @@ sed -i "s/^dir\s*\.\/$/dir \/usr\/local\/redis\/data/g" $REDIS_CONF/redis.conf
 sed -i "s/^logfile\s*\"*$/logfile \/usr\/local\/redis\/log\/redis.log/g" $REDIS_CONF/redis.conf
 sed -i "s/^pidfile\s*\/var\/run\/redis_6379\.pid/pidfile \/usr\/local\/redis\/run\/redis.pid/g" $REDIS_CONF/redis.conf
 sed -i "s/^save\s/# save/g" $REDIS_CONF/redis.conf
+sed -i "s/^tcp-backlog 511/tcp-backlog 65535/g" $REDIS_CONF/redis.conf
 grep '^slaveof.*' $REDIS_CONF/redis.conf || echo "slaveof $MASTER_IP 6379" >> $REDIS_CONF/redis.conf
 
 # 测试配置
