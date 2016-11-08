@@ -7,7 +7,7 @@
 BIND_IP=192.168.33.11 # 填写本机IP
 MASTER_IP=192.168.33.11 # 填写主Reis的IP
 EMAIL=xiaolei@16fan.com # 填写自己的邮箱
-EMAIL_PASSWD=19927120 # 填写自己的邮箱密码
+EMAIL_PASSWD=123456 # 填写自己的邮箱密码
 
 # 安装基本环境
 yum -y install tcl gcc cc wget
