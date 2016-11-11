@@ -39,15 +39,43 @@ sed -i "s/after 100/after 300/g" ./tests/integration/replication-psync.tcl
 
 # 修改内存相关参数
 KERNEL_MM_PATH=/sys/kernel/mm/transparent_hugepage/enabled
-grep 'transparent_hugepage' $KERNEL_MM_PATH || echo never > $KERNEL_MM_PATH
-echo 'echo never > /sys/kernel/mm/transparent_hugepage/enabled' >> /etc/rc.local
+
+# Transparent Huge Pages (THP) 参数说明，来源（http://www.aichengxu.com/view/11064549），这是一个关于透明内存巨页的话题。
+# 简单来说内存可管理的最小单位是page，一个page通常是4kb，那1M内存就有256个page，
+# cpu通过内置的内存管理单元管理page表记录。Huge Page表示page的大小超过了4kb，
+# 一般是2M到1G，它的出现主要是为了管理超大内存。比如1TB的内存。而THP就是管理Huge Pages
+# 抽象层次，根据一些资料显示THP会导致内存锁影响性能，所以一般建议关闭。
+# 主要参数有：
+#   always 尽量使用透明内存，扫描内存，有521个4k页面可以整合，就整合成2M的页面
+#   never 关闭，不使用透明内存
+#   madvise 避免改变内存占用
+grep 'transparent_hugepage' $KERNEL_MM_PATH || echo never > $KERNEL_MM_PATH # 关闭透明内存，提高内存性能，默认值为always
+echo 'echo never > /sys/kernel/mm/transparent_hugepage/enabled' >> /etc/rc.local # 加入开机脚本
 SYSCTL=/etc/sysctl.conf
-grep '^vm\.overcommit_memory\s*=\s*1$' $SYSCTL || echo 'vm.overcommit_memory = 1' >> $SYSCTL
-grep '^net\.core\.somaxconn\s*=\s*65535$' $SYSCTL || echo 'net.core.somaxconn = 65535' >> $SYSCTL
-grep '^net\.ipv4\.tcp_max_syn_backlog\s*=\s*20480$' $SYSCTL || echo 'net.ipv4.tcp_max_syn_backlog = 20480' >> $SYSCTL
+
+# vm.overcommit_memory 参数说明，来源（http://www.aichengxu.com/view/11064549）
+# 参数 0 表示检查是否有足够的内存可用，如果是，允许分配；如果内存不够，拒绝该请求，并返回一个错误给程序
+# 参数 1 表示允许分配超出物理内存加上交换内存的请求
+# 参数 2 表示总是返回 true
+# 以下参数的修改主要是应付内存不够的情况
+grep '^vm\.overcommit_memory\s*=\s*1$' $SYSCTL || echo 'vm.overcommit_memory = 1' >> $SYSCTL # 将过量使用内存参数设置为1，表示允许分配超出物理内存加上交换内存的请求
+
+# net.core.somaxconn和net.ipv4.tcp_max_syn_backlog参数说明，来源（http://www.aichengxu.com/view/11064549）
+# 修改网络连接的队列大小，对应了配置文件redis.conf中的“tcp-backlog 511”配置项，表示在
+# 高并发下的最大队列大小，受限于系统的somaxconn与tcp_max_syn_backlog这两个值，所以应该把
+# 这两个内核参数调大。
+grep '^net\.core\.somaxconn\s*=\s*65535$' $SYSCTL || echo 'net.core.somaxconn = 65535' >> $SYSCTL # 最大队列长度，应付突发的大并发请求，默认为128
+grep '^net\.ipv4\.tcp_max_syn_backlog\s*=\s*20480$' $SYSCTL || echo 'net.ipv4.tcp_max_syn_backlog = 20480' >> $SYSCTL # 半连接队列长度，此值受限于内存大小，默认为1024
+
+# 使对/etc/sysctl.conf的修改生效
 sysctl -p
 
 # 修改redis可打开的最大文件数
+# 参数说明：
+# 如果redis报max number of clients错误，那么可以检查redis.conf的maxclients参数，redis默认将
+# 这个参数设置为10000，也就是说默认可以承载10000的每秒并发量，如果超过这个数就会报错。如果
+# maxclients设置为10000，而/etc/security/limits.conf的相应设置小于10000，那么会以limits.conf里的
+# 设置来作为 maxclients的参数。以下命令就是修改系统最大文件描述符数。
 SEC_LIMITS=/etc/security/limits.conf
 grep '^\*\s*soft\s*nofile\s*65535$' $SEC_LIMITS || echo '*  soft nofile 65535' >> /etc/security/limits.conf
 grep '^\*\s*soft\s*nofile\s*65535$' $SEC_LIMITS || echo '*  hard nofile 65535' >> /etc/security/limits.conf
@@ -120,6 +148,8 @@ sed -i "s/^pidfile\s*\/var\/run\/redis_6379\.pid/pidfile \/usr\/local\/redis\/ru
 sed -i "s/^save\s/# save/g" $REDIS_CONF/redis.conf
 sed -i "s/^tcp-backlog 511/tcp-backlog 65535/g" $REDIS_CONF/redis.conf
 grep '^slaveof.*' $REDIS_CONF/redis.conf || echo "slaveof $MASTER_IP 6379" >> $REDIS_CONF/redis.conf
+grep '^maxclients.*' $REDIS_CONF/redis.conf || echo "maxclients 65535" >> $REDIS_CONF/redis.conf
+sed -i "s/^timeout\s0/timeout 30/g" $REDIS_CONF/redis.conf
 
 # 测试配置
 echo "======================redis.conf==========================="
