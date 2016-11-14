@@ -50,7 +50,7 @@ KERNEL_MM_PATH=/sys/kernel/mm/transparent_hugepage/enabled
 #   never 关闭，不使用透明内存
 #   madvise 避免改变内存占用
 grep 'transparent_hugepage' $KERNEL_MM_PATH || echo never > $KERNEL_MM_PATH # 关闭透明内存，提高内存性能，默认值为always
-echo 'echo never > /sys/kernel/mm/transparent_hugepage/enabled' >> /etc/rc.local # 加入开机脚本
+echo 'echo never > /sys/kernel/mm/transparent_hugepage/enabled' >> /etc/rc.d/rc.local # 加入开机脚本
 SYSCTL=/etc/sysctl.conf
 
 # vm.overcommit_memory 参数说明，来源（http://www.aichengxu.com/view/11064549）

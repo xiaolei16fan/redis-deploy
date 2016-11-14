@@ -42,7 +42,7 @@ sed -i "s/after 100/after 300/g" ./tests/integration/replication-psync.tcl
 # 修改内存相关参数
 KERNEL_MM_PATH=/sys/kernel/mm/transparent_hugepage/enabled
 grep 'transparent_hugepage' $KERNEL_MM_PATH || echo never > $KERNEL_MM_PATH
-echo 'echo never > /sys/kernel/mm/transparent_hugepage/enabled' >> /etc/rc.local
+echo 'echo never > /sys/kernel/mm/transparent_hugepage/enabled' >> /etc/rc.d/rc.local
 SYSCTL=/etc/sysctl.conf
 grep '^vm\.overcommit_memory\s*=\s*1$' $SYSCTL || echo 'vm.overcommit_memory = 1' >> $SYSCTL
 grep '^net\.core\.somaxconn\s*=\s*65535$' $SYSCTL || echo 'net.core.somaxconn = 65535' >> $SYSCTL
