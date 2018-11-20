@@ -43,6 +43,7 @@ sed -i "s/after 100/after 300/g" ./tests/integration/replication-psync.tcl
 KERNEL_MM_PATH=/sys/kernel/mm/transparent_hugepage/enabled
 grep 'transparent_hugepage' $KERNEL_MM_PATH || echo never > $KERNEL_MM_PATH
 echo 'echo never > /sys/kernel/mm/transparent_hugepage/enabled' >> /etc/rc.d/rc.local
+cp /etc/sysctl.conf /etc/sysctl.conf.bak
 SYSCTL=/etc/sysctl.conf
 grep '^vm\.overcommit_memory\s*=\s*1$' $SYSCTL || echo 'vm.overcommit_memory = 1' >> $SYSCTL
 grep '^net\.core\.somaxconn\s*=\s*65535$' $SYSCTL || echo 'net.core.somaxconn = 65535' >> $SYSCTL
@@ -50,6 +51,7 @@ grep '^net\.ipv4\.tcp_max_syn_backlog\s*=\s*20480$' $SYSCTL || echo 'net.ipv4.tc
 sysctl -p
 
 # 修改redis可打开的最大文件数
+cp /etc/security/limits.conf /etc/security/limits.conf.bak
 SEC_LIMITS=/etc/security/limits.conf
 grep '^\*\s*soft\s*nofile\s*65535$' $SEC_LIMITS || echo '*  soft nofile 65535' >> /etc/security/limits.conf
 grep '^\*\s*soft\s*nofile\s*65535$' $SEC_LIMITS || echo '*  hard nofile 65535' >> /etc/security/limits.conf
@@ -180,7 +182,3 @@ fi
 if [ `echo $?` = 0 ]; then
     echo "OK! REDIS AND SENTINEL CAN WORK ON THIS SERVER."
 fi
-
-# 安装redis-stat
-
-# 安装phpredis
